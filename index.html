@@ -10,15 +10,13 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
   :root {
-    --vault-bg: #0a0a0c;
-    --vault-bg-soft: #111114;
-    --vault-text: #f5f5f7;
-    --vault-text-dim: rgba(245, 245, 247, 0.62);
-    --vault-text-faint: rgba(245, 245, 247, 0.38);
-    --vault-line: rgba(255, 255, 255, 0.08);
-    --vault-line-strong: rgba(255, 255, 255, 0.16);
-    --section-bg: #0a0a0c;
-    --section-accent: #f5f5f7;
+    --vault-bg: #ffffff;
+    --vault-bg-soft: #f6f6f7;
+    --vault-text: #0a0a0c;
+    --vault-text-dim: rgba(10, 10, 12, 0.62);
+    --vault-text-faint: rgba(10, 10, 12, 0.42);
+    --vault-line: rgba(10, 10, 12, 0.08);
+    --vault-line-strong: rgba(10, 10, 12, 0.18);
   }
 
   * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
@@ -32,12 +30,13 @@
   }
   .font-display { font-family: 'Syne', sans-serif; letter-spacing: -0.02em; }
 
-  /* === Portal === */
+  /* === Portal (kept dark for cinematic intro) === */
   #portal {
     position: fixed; inset: 0; z-index: 100;
     display: flex; align-items: center; justify-content: center;
     background: radial-gradient(ellipse at 50% 30%, #1a1a20 0%, #0a0a0c 70%);
     transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1), visibility 1.1s;
+    color: #fff;
   }
   #portal.gone { opacity: 0; visibility: hidden; pointer-events: none; }
   .portal-grain {
@@ -72,14 +71,13 @@
   .enter-btn:hover::before { transform: translateY(0); }
   .enter-btn span { position: relative; z-index: 1; }
 
-  /* === Dynamic section background engine === */
+  /* === Dynamic section background engine (now light) === */
   .section-bg-layer {
     position: fixed; inset: 0; z-index: -1;
     background: var(--vault-bg);
     transition: background 1.4s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: background;
   }
-  /* Vertical fade overlays on each section to bleed neighbours - removes hard lines */
   .bat-section {
     position: relative;
     min-height: 100vh;
@@ -87,35 +85,21 @@
     transition: background 1.2s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: background;
   }
+  /* Soft white fade top/bottom so sections blend seamlessly */
   .bat-section::before, .bat-section::after {
     content: ''; position: absolute; left: 0; right: 0; height: 22vh;
     pointer-events: none; z-index: 1;
   }
-  .bat-section::before { top: 0; background: linear-gradient(to bottom, rgba(10,10,12,0.55), transparent); }
-  .bat-section::after { bottom: 0; background: linear-gradient(to top, rgba(10,10,12,0.55), transparent); }
+  .bat-section::before { top: 0; background: linear-gradient(to bottom, rgba(255,255,255,0.85), transparent); }
+  .bat-section::after { bottom: 0; background: linear-gradient(to top, rgba(255,255,255,0.85), transparent); }
 
   /* === Sticky league + top5 bar === */
   .sticky-nav {
     position: sticky; top: 0; z-index: 50;
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
-    background: rgba(10,10,12,0.72);
+    background: rgba(255,255,255,0.78);
     border-bottom: 1px solid var(--vault-line);
-  }
-
-  .league-pill {
-    padding: 8px 18px; font-size: 11px; letter-spacing: 0.18em;
-    text-transform: uppercase; font-weight: 500;
-    border-radius: 999px; cursor: pointer;
-    color: var(--vault-text-dim);
-    border: 1px solid transparent;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-  }
-  .league-pill:hover { color: var(--vault-text); }
-  .league-pill.active {
-    color: var(--vault-text); border-color: var(--vault-line-strong);
-    background: rgba(255,255,255,0.04);
   }
 
   .top5-link {
@@ -140,13 +124,13 @@
   }
   .swatch-inner {
     width: 100%; height: 100%; border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid rgba(10,10,12,0.12);
     transition: all 0.35s ease;
   }
-  .swatch:hover .swatch-inner { transform: scale(1.04); border-color: rgba(255,255,255,0.4); }
+  .swatch:hover .swatch-inner { transform: scale(1.04); border-color: rgba(10,10,12,0.45); }
   .swatch.active .swatch-inner {
-    border-color: #fff;
-    box-shadow: 0 0 0 2px rgba(0,0,0,0.4), 0 0 0 3px rgba(255,255,255,0.95), 0 8px 30px rgba(0,0,0,0.4);
+    border-color: #0a0a0c;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px #0a0a0c, 0 8px 30px rgba(0,0,0,0.18);
   }
   .swatch-label {
     font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -160,51 +144,63 @@
     font-size: 8px; letter-spacing: 0.1em;
     padding: 2px 6px; margin-top: 4px;
     border-radius: 4px;
-    background: rgba(255,255,255,0.1); color: #fff;
+    background: rgba(10,10,12,0.08); color: var(--vault-text);
     text-transform: uppercase;
-    border: 1px solid rgba(255,255,255,0.18);
+    border: 1px solid rgba(10,10,12,0.15);
   }
-  .le-badge.current { background: rgba(255,255,255,0.92); color: #0a0a0c; border-color: transparent; }
+  .le-badge.current { background: #0a0a0c; color: #fff; border-color: transparent; }
 
-  /* Image placeholders (no frames) */
+  /* === Image wrap — single large hero === */
   .bat-image-wrap {
     background: transparent !important; border: none !important;
     box-shadow: none !important; outline: none !important; padding: 0;
+    width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    min-height: 60vh;
   }
-  .bat-image-wrap img { background: transparent; }
+  .bat-image-wrap img {
+    background: transparent;
+    width: 100%;
+    height: auto;
+    max-height: 85vh;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.5s ease;
+    filter: drop-shadow(0 30px 60px rgba(0,0,0,0.12));
+  }
   .image-placeholder {
     width: 100%; aspect-ratio: 4 / 5;
     display: flex; align-items: center; justify-content: center;
-    color: rgba(255,255,255,0.32);
+    color: rgba(10,10,12,0.32);
     font-family: 'Syne', sans-serif; font-weight: 500;
     font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
     text-align: center;
   }
-  .image-placeholder span::before { content: ''; display: block; width: 1px; height: 40px; background: rgba(255,255,255,0.2); margin: 0 auto 16px; }
+  .image-placeholder span::before { content: ''; display: block; width: 1px; height: 40px; background: rgba(10,10,12,0.2); margin: 0 auto 16px; }
 
   /* === Spec rows === */
   .spec-label {
     font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: rgba(255,255,255,0.5); font-weight: 500; margin-bottom: 6px;
+    color: rgba(10,10,12,0.5); font-weight: 500; margin-bottom: 6px;
   }
   .spec-value {
     font-family: 'Syne', sans-serif; font-weight: 500;
-    font-size: 16px; color: #fff; letter-spacing: -0.005em;
+    font-size: 16px; color: var(--vault-text); letter-spacing: -0.005em;
   }
 
   /* Overview league cards */
   .spec-card {
-    background: rgba(255,255,255,0.02);
+    background: rgba(10,10,12,0.02);
     border: 1px solid var(--vault-line);
     border-radius: 18px; padding: 28px;
     transition: all 0.4s ease;
   }
-  .spec-card:hover { border-color: var(--vault-line-strong); background: rgba(255,255,255,0.04); }
+  .spec-card:hover { border-color: var(--vault-line-strong); background: rgba(10,10,12,0.04); }
 
   /* Scrollbar styling */
   .colorway-tray::-webkit-scrollbar { width: 4px; }
-  .colorway-tray::-webkit-scrollbar-track { background: rgba(255,255,255,0.04); border-radius: 4px; }
-  .colorway-tray::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+  .colorway-tray::-webkit-scrollbar-track { background: rgba(10,10,12,0.04); border-radius: 4px; }
+  .colorway-tray::-webkit-scrollbar-thumb { background: rgba(10,10,12,0.2); border-radius: 4px; }
 
   /* Fade-in on observe */
   .fade-in { opacity: 0; transform: translateY(24px); transition: opacity 1s ease, transform 1s cubic-bezier(0.22,1,0.36,1); }
@@ -216,8 +212,9 @@
     padding: 4px 12px;
     font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase;
     border-radius: 999px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(10,10,12,0.06);
+    border: 1px solid rgba(10,10,12,0.12);
+    color: var(--vault-text);
     font-weight: 500;
     backdrop-filter: blur(10px);
   }
@@ -230,18 +227,18 @@
   .brand-mark {
     font-family: 'Syne', sans-serif; font-weight: 700;
     letter-spacing: -0.02em;
+    color: var(--vault-text);
   }
 
   /* Page transition wrapper */
   #main-content { opacity: 0; transition: opacity 1.2s ease 0.3s; }
   #main-content.revealed { opacity: 1; }
 
-  /* Sleek dropdown */
+  /* Sleek dropdown — light variant */
   .league-dropdown {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid var(--vault-line-strong);
-    background-color: #000000;
-    color: var(--vault-text);
+    background-color: #0a0a0c;
+    color: #fff;
+    border: 1px solid #0a0a0c;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 12px; font-weight: 500; letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -255,8 +252,17 @@
     background-position: right 14px center;
   }
 
+  /* Colorway accent strip — subtle band so the colorway color is felt without breaking the white bg */
+  .accent-strip {
+    width: 4px;
+    height: 100%;
+    border-radius: 4px;
+    transition: background 0.6s ease;
+  }
+
   @media (max-width: 768px) {
     .bat-section { padding: 5rem 0; }
+    .bat-image-wrap { min-height: 40vh; }
   }
 </style>
 </head>
@@ -293,7 +299,7 @@
     <div class="max-w-[1480px] mx-auto px-6 md:px-12 pt-5 pb-4">
       <div class="flex items-center justify-between mb-5">
         <div class="brand-mark text-xl tracking-tight">
-          The Bat Vault<span style="color: rgba(255,255,255,0.35);">.</span>
+          The Bat Vault<span style="color: rgba(10,10,12,0.35);">.</span>
         </div>
         <div class="flex items-center gap-3">
           <select id="leagueDropdown" class="league-dropdown" onchange="switchLeague(this.value)">
@@ -304,7 +310,6 @@
           </select>
         </div>
       </div>
-      <!-- Top 5 horizontal nav -->
       <div class="top5-scroll overflow-x-auto">
         <nav id="top5Nav" class="flex items-center gap-8 min-w-max"></nav>
       </div>
@@ -335,7 +340,7 @@
   <footer class="relative z-10 py-16 px-6 md:px-12 mt-12 border-t" style="border-color: var(--vault-line);">
     <div class="max-w-[1480px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
       <div>
-        <div class="brand-mark text-2xl mb-4">The Bat Vault<span style="color: rgba(255,255,255,0.35);">.</span></div>
+        <div class="brand-mark text-2xl mb-4">The Bat Vault<span style="color: rgba(10,10,12,0.35);">.</span></div>
         <p style="color: var(--vault-text-faint); font-size: 13px; max-width: 380px;">An archive — not a shop. Built to celebrate the craft, the colorways, and the culture of the modern baseball bat.</p>
       </div>
       <div class="text-right" style="color: var(--vault-text-faint); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;">
@@ -348,7 +353,7 @@
 
 <script>
 /* =========================================================
-   DATA — full archive, structured for backend image swaps
+   DATA — full archive
    ========================================================= */
 const ENTER_BUTTON_TEXT = "Enter Vault";
 
@@ -356,13 +361,11 @@ const LEAGUES = {
   USA: {
     name: "USA League",
     description: "Designed to perform like wood with the safety standards of youth play. The entry tier where fundamentals are forged and form is found.",
-
     specs: {
       Ages: "4 – 13 years old",
       Rules: "Little League / A&B Rec — wood-like performance",
       "Drop Weights": "-5, -8, -10, -11, -12",
       "Barrel Size": "2 5/8\" or 2 1/4\""
-      
     },
     bats: [
       {
@@ -372,8 +375,8 @@ const LEAGUES = {
         sizes: "28\" – 32\"",
         drops: "-10",
         colorways: [
-          { name: "Red / Black / Gold", bg: "#4F1005", accent: "#54430C", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4132010_/WBL4132010__73e6181e48f0b7afc4c8ca067f9aa714.png", imageDetail: "" },
-          { name: "Black / Blue / Orange", bg: "#041A52", accent: "#CC8910", release: "Standard 2025", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL2983010_/WBL2983010__b5be9b0c28492ac52ac3ed2a4037c95d.png", imageDetail: "" }
+          { name: "Red / Black / Gold", bg: "#4F1005", accent: "#54430C", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4132010_/WBL4132010__73e6181e48f0b7afc4c8ca067f9aa714.png" },
+          { name: "Black / Blue / Orange", bg: "#041A52", accent: "#CC8910", release: "Standard 2025", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL2983010_/WBL2983010__b5be9b0c28492ac52ac3ed2a4037c95d.png" }
         ]
       },
       {
@@ -383,7 +386,7 @@ const LEAGUES = {
         sizes: "27\" – 32\"",
         drops: "-10, -11",
         colorways: [
-          { name: "Flash Pink / Orange / Yellow", bg: "#F2A5F2", accent: "#FAD187", release: "Standard", imageHero: "https://baseball-shop.online/9634-thickbox_default/2026-mazza-da-baseball-easton-mav2-flash-28-10-usa.jpg", imageDetail: "" }
+          { name: "Flash Pink / Orange / Yellow", bg: "#F2A5F2", accent: "#FAD187", release: "Standard", imageHero: "https://baseball-shop.online/9634-thickbox_default/2026-mazza-da-baseball-easton-mav2-flash-28-10-usa.jpg" }
         ]
       },
       {
@@ -393,8 +396,8 @@ const LEAGUES = {
         sizes: "28\" – 32\"",
         drops: "-10, -11",
         colorways: [
-          { name: "Textured Off White / Black", bg: "#DED1AF", accent: "#000000", release: "2025 Series", imageHero: "https://smashitsports.com/cdn/shop/files/2025-rawlings-icon-3-bbcor-baseball-bat-rbb5i3-smash-it-sports-44027_grande.png?v=1752496970", imageDetail: "" },
-          { name: "The Chosen One — Mint / Gold", bg: "#A8E0D9", accent: "#B58A07", release: "2026 Series", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/original/products/2291/7210/2026-Rawlings-Icon-USA-Baseball-5_6475__27019.1775427714.png?c=2", imageDetail: "" }
+          { name: "Textured Off White / Black", bg: "#DED1AF", accent: "#000000", release: "2025 Series", imageHero: "https://smashitsports.com/cdn/shop/files/2025-rawlings-icon-3-bbcor-baseball-bat-rbb5i3-smash-it-sports-44027_grande.png?v=1752496970" },
+          { name: "The Chosen One — Mint / Gold", bg: "#A8E0D9", accent: "#B58A07", release: "2026 Series", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/original/products/2291/7210/2026-Rawlings-Icon-USA-Baseball-5_6475__27019.1775427714.png?c=2" }
         ]
       },
       {
@@ -404,9 +407,9 @@ const LEAGUES = {
         sizes: "27\" – 31\"",
         drops: "-5, -8, -10",
         colorways: [
-          { name: "Red / Grey / White", bg: "#8F1403", accent: "#8F8F8F", release: "2026 Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2579/22571/Screenshot_2024-06-10_at_11-23-29_CATX2_Senior_League_-8_USA_Baseball-removebg-preview__68117.1718084677.png?c=2", imageDetail: "" },
-          { name: "Red / White / Black", bg: "#000000", accent: "#8F1403", release: "2025", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2566/22369/Screenshot_2024-06-10_at_08-01-38_CATX2_Senior_League_-8-removebg-preview__60150.1718083058.png?c=2", imageDetail: "" },
-          { name: "Pink / Teal / Black", bg: "#47D0D6", accent: "#000000", release: "2025 Vice ", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2880/25998/Screenshot_2024-10-07_at_12-43-43_Marucci_CATX2_Composite_VICE_Senior_League_-10-removebg-preview__35199.1728319795.png?c=2", imageDetail: "" }
+          { name: "Red / Grey / White", bg: "#8F1403", accent: "#8F8F8F", release: "2026 Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2579/22571/Screenshot_2024-06-10_at_11-23-29_CATX2_Senior_League_-8_USA_Baseball-removebg-preview__68117.1718084677.png?c=2" },
+          { name: "Red / White / Black", bg: "#000000", accent: "#8F1403", release: "2025", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2566/22369/Screenshot_2024-06-10_at_08-01-38_CATX2_Senior_League_-8-removebg-preview__60150.1718083058.png?c=2" },
+          { name: "Pink / Teal / Black", bg: "#47D0D6", accent: "#000000", release: "2025 Vice ", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/2880/25998/Screenshot_2024-10-07_at_12-43-43_Marucci_CATX2_Composite_VICE_Senior_League_-10-removebg-preview__35199.1728319795.png?c=2" }
         ]
       },
       {
@@ -416,10 +419,10 @@ const LEAGUES = {
         sizes: "29\" – 32\"",
         drops: "-10",
         colorways: [
-          { name: "Natural Wood-grain / Black", bg: "#EBDDBE", accent: "#000000", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3750/36223/2025_BlackCobra_Hybrid_USA_-5_ProductPics_BackA-removebg-preview__05461.1756482799.png?c=2", imageDetail: "" },
-          { name: "Pink / Blue / Bone White", bg: "#50A8E5", accent: "#E35FCE", release: "2026 Solar Storm", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/products/3751/images/36241/2026_SolarStorm_Hybrid_USSSA_-10_Product-Images_BackA-removebg-preview__40929.1756484215.500.750.png?c=2", imageDetail: "" },
-          { name: "Light Blue / Navy", bg: "#041E52", accent: "#BAD2FF", release: "2026 Frostbite", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/products/4109/images/40801/2026_Frostbite_Hybrid_USA_Product-Images_1002_BackA-removebg-preview__87562.1765821843.500.750.png?c=2", imageDetail: "" },
-          { name: "Red / White / Blue", bg: "#610E02", accent: "#2B67A1", release: "2026 Lonestar", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/500x659/products/3748/36179/2026_LoneStar_Hybrid_USSSA_-8_Product-Images_02_Back_1200xK-removebg-preview__40787.1756480121.png?c=2", imageDetail: "" },
+          { name: "Natural Wood-grain / Black", bg: "#EBDDBE", accent: "#000000", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3750/36223/2025_BlackCobra_Hybrid_USA_-5_ProductPics_BackA-removebg-preview__05461.1756482799.png?c=2" },
+          { name: "Pink / Blue / Bone White", bg: "#50A8E5", accent: "#E35FCE", release: "2026 Solar Storm", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/products/3751/images/36241/2026_SolarStorm_Hybrid_USSSA_-10_Product-Images_BackA-removebg-preview__40929.1756484215.500.750.png?c=2" },
+          { name: "Light Blue / Navy", bg: "#041E52", accent: "#BAD2FF", release: "2026 Frostbite", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/products/4109/images/40801/2026_Frostbite_Hybrid_USA_Product-Images_1002_BackA-removebg-preview__87562.1765821843.500.750.png?c=2" },
+          { name: "Red / White / Blue", bg: "#610E02", accent: "#2B67A1", release: "2026 Lonestar", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/500x659/products/3748/36179/2026_LoneStar_Hybrid_USSSA_-8_Product-Images_02_Back_1200xK-removebg-preview__40787.1756480121.png?c=2" }
         ]
       }
     ]
@@ -442,11 +445,11 @@ const LEAGUES = {
         sizes: "27\" – 32\"",
         drops: "-5, -8, -10",
         colorways: [
-          { name: "Flame Orange / Yellow / Black", bg: "#5a1a05", accent: "#ff7a1f", release: "Standard ", imageHero: "https://cdn.shoplightspeed.com/shops/607075/files/55518347/650x650x2/2024-easton-hype-fire-8-usssa-baseball-bat-eut4hyp.jpg", imageDetail: "" },
-          { name: "Spring Break — Cyan Blue / Pastel Pink", bg: "#0e3a52", accent: "#5fd3f0", release: "2026 Limited Edition", imageHero: "", imageDetail: "" },
-          { name: "Pool Party — Bubblegum Pink / Teal", bg: "#4a1a3f", accent: "#ff6fb5", release: "2026 Limited Edition", imageHero: "https://nutmegsportinggoods.com/cdn/shop/files/2500x2500_2transparent_EUT6HPP10_800x.png?v=1749238230", imageDetail: "" },
-          { name: "Arctic Blast — Ice Blue / Silver", bg: "#1a3a48", accent: "#a8dbe8", release: "2025 Limited Edition", imageHero: "", imageDetail: "" },
-          { name: "Pink / Yellow / Ice", bg: "#8C8622", accent: "#084C63", release: "Standard", imageHero: "", imageDetail: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2292/7209/2026-Easton-Hype-Fire-USA-Baseball-10_6476__30006.1775427712.png?c=2" },
+          { name: "Flame Orange / Yellow / Black", bg: "#5a1a05", accent: "#ff7a1f", release: "Standard ", imageHero: "https://cdn.shoplightspeed.com/shops/607075/files/55518347/650x650x2/2024-easton-hype-fire-8-usssa-baseball-bat-eut4hyp.jpg" },
+          { name: "Spring Break — Cyan Blue / Pastel Pink", bg: "#0e3a52", accent: "#5fd3f0", release: "2026 Limited Edition", imageHero: "https://cdn11.bigcommerce.com/s-h6hszdr/images/stencil/1280x1280/products/2473/5797/eus6sbm10__51840.1771641898.jpg?c=2" },
+          { name: "Pool Party — Bubblegum Pink / Teal", bg: "#4a1a3f", accent: "#ff6fb5", release: "2026 Limited Edition", imageHero: "https://nutmegsportinggoods.com/cdn/shop/files/2500x2500_2transparent_EUT6HPP10_800x.png?v=1749238230" },
+          { name: "Arctic Blast — Ice Blue / Silver", bg: "#1a3a48", accent: "#a8dbe8", release: "2025 Limited Edition", imageHero: "https://smashitsports.com/cdn/shop/files/2024-easton-hype-fire-arctic-flame-5-usssa-baseball-bat-eut4hfb5-smash-it-sports-19743.jpg?v=1752497038&width=1000" },
+          { name: "Pink / Yellow / Ice", bg: "#8C8622", accent: "#084C63", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2292/7209/2026-Easton-Hype-Fire-USA-Baseball-10_6476__30006.1775427712.png?c=2" }
         ]
       },
       {
@@ -456,9 +459,9 @@ const LEAGUES = {
         sizes: "28\" – 32\"",
         drops: "-5, -8, -10",
         colorways: [
-          { name: "White / Spring Break Pink / Yellow", bg: "#A19822", accent: "#ff7fb0", release: "Standard", imageHero: "https://www.diamondsportgear.com/cdn/shop/files/EUT6DUB10-131.png?v=1745957223&width=1946", imageDetail: "" },
-          { name: "Spring Break — Neon Teal / Magenta", bg: "#1a1a3d", accent: "#ff2dbb", release: "2026 Limited Edition", imageHero: "", imageDetail: "" },
-          { name: "Spring Break - Light Blue / Neon", bg: "#3C7891", accent: "#d4af37", release: "2026 Limited Edition", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4357/43464/26EASBBASETHDBSPRNQMMA-removebg-preview__76563.1771966734.png?c=2", imageDetail: "" }
+          { name: "White / Spring Break Pink / Yellow", bg: "#A19822", accent: "#ff7fb0", release: "Standard", imageHero: "https://www.diamondsportgear.com/cdn/shop/files/EUT6DUB10-131.png?v=1745957223&width=1946" },
+          { name: "Spring Break — Neon Teal / Magenta", bg: "#1a1a3d", accent: "#ff2dbb", release: "2026 Limited Edition", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2432/7084/2026-Easton-The-Dub-Pink-Spring-Break-USSSA-8_6961__30779.1775427441.png?c=2" },
+          { name: "Spring Break - Light Blue / Neon", bg: "#3C7891", accent: "#d4af37", release: "2026 Limited Edition", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4357/43464/26EASBBASETHDBSPRNQMMA-removebg-preview__76563.1771966734.png?c=2" }
         ]
       },
       {
@@ -468,8 +471,8 @@ const LEAGUES = {
         sizes: "28\" – 32\"",
         drops: "-5, -8, -10",
         colorways: [
-          { name: "Turquoise / Soft Pink Gradient", bg: "#0d4a52", accent: "#ffb3d0", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4118010_/WBL4118010__313bd8a02887a0ee89cee9c6f0c72c7c.png", imageDetail: "" },
-          { name: "Minted — Money Green / Chrome Silver", bg: "#041A01", accent: "#b8b8d4", release: "2026 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4251010_/WBL4251010__5e47a9a1c0d40d2fa7d07725586b9f56.png", imageDetail: "" }
+          { name: "Turquoise / Soft Pink Gradient", bg: "#0d4a52", accent: "#ffb3d0", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4118010_/WBL4118010__313bd8a02887a0ee89cee9c6f0c72c7c.png" },
+          { name: "Minted — Money Green / Chrome Silver", bg: "#041A01", accent: "#b8b8d4", release: "2026 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4251010_/WBL4251010__5e47a9a1c0d40d2fa7d07725586b9f56.png" }
         ]
       },
       {
@@ -479,7 +482,7 @@ const LEAGUES = {
         sizes: "27\" – 31\"",
         drops: "-8, -10",
         colorways: [
-          { name: "Acid Green / Stealth Black", bg: "#315C31", accent: "#5a7a3a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3585/34442/Screenshot_2025-07-11_at_09-08-26_2026_Soldier_Tank_Drip_USSSA_Drop_10_Bat_Better_Baseball_Better_Baseball-removebg-preview__96817.1752250970.png?c=2", imageDetail: "" },
+          { name: "Acid Green / Stealth Black", bg: "#315C31", accent: "#5a7a3a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3585/34442/Screenshot_2025-07-11_at_09-08-26_2026_Soldier_Tank_Drip_USSSA_Drop_10_Bat_Better_Baseball_Better_Baseball-removebg-preview__96817.1752250970.png?c=2" }
         ]
       },
       {
@@ -489,8 +492,8 @@ const LEAGUES = {
         sizes: "27\" – 32\"",
         drops: "-5, -8, -10",
         colorways: [
-          { name: "Camo White / Black", bg: "#5C5757", accent: "#000000", release: "2025 Standard", imageHero: "", imageDetail: "" },
-          { name: "Bright Mint / Silver", bg: "#4B735C", accent: "#C2CCC4", release: "2025 Standard", imageHero: "https://nutmegsportinggoods.com/cdn/shop/files/RUT6I8-40.png?v=1754494173", imageDetail: "https://s.turbifycdn.com/aah/nutosportsinc/rawlings-icon-2-3-4-big-barrel-usssa-bat-rut6i5-5oz-2026-21.jpg" },
+          { name: "Camo White / Black", bg: "#5C5757", accent: "#000000", release: "2025 Standard", imageHero: "https://m.media-amazon.com/images/I/614OpJh97ML._AC_UF1000,1000_QL80_DpWeblab_.jpg" },
+          { name: "Bright Mint / Silver", bg: "#4B735C", accent: "#C2CCC4", release: "2025 Standard", imageHero: "https://nutmegsportinggoods.com/cdn/shop/files/RUT6I8-40.png?v=1754494173" }
         ]
       }
     ]
@@ -513,18 +516,18 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Racer — Sky Blue / Orange", bg: "#0d3a5c", accent: "#ff8a2a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4569/45681/CBB6GLFB3-1A-removebg-preview__83226.1779278966.png?c=2", imageDetail: "" },
-          { name: "Stang — Red / Black", bg: "#3d0c0c", accent: "#e63946", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3867/37753/CBB6STNG3-1A-removebg-preview__49478.1760549394.png?c=2", imageDetail: "" },
-          { name: "Baja — Orange / Teal", bg: "#4a1a08", accent: "#2ecadb", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3866/37735/CBB6BAJA3-1A-removebg-preview__86724.1760548617.png?c=2", imageDetail: "" },
-          { name: "Cookies & Cream — White / Chocolate Speckle", bg: "#2d1d12", accent: "#f0e4d4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/products/2452/images/7066/2026-Combat-Spec-A1-Cookies-N-Cream-3-BBCOR-LAST-ONE_7025__39496.1775427394.415.315.png?c=2", imageDetail: "" },
-          { name: "Mint Chip — Mint Blue / Chocolate Speckle", bg: "#0A5C57", accent: "#2d1d12", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2451/7067/2026-Combat-Spec-A1-Mint-Chip-3-BBCOR_7022__41546.1775427397.png?c=2", imageDetail: "" },
-          { name: "Cookie Jar — Monster Blue / Chocolate", bg: "#041B57", accent: "#2d1d12", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2398/7118/2026-Combat-Spec-A1-Cookie-Monster-3-BBCOR_7019__62107.1775427515.png?c=2", imageDetail: "" },
-          { name: "Mint Militia — Mint Green / Dark Flake", bg: "#0f2e26", accent: "#7adba0", release: "Standard", imageHero: "", imageDetail: "" },
-          { name: "Sandstorm — Desert Tan / Khaki", bg: "#3d2f18", accent: "#d4b27a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/1280x1280/products/4338/43277/Untitled_design29__08397.1771558318.png?c=2", imageDetail: "" },
-          { name: "Midnight Rodeo Arena — Onyx Black / Gold", bg: "#0e0c0a", accent: "#c8a23a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3755/36566/ARENA-removebg-preview__74208.1759260732.png?c=2", imageDetail: "" },
-          { name: "Midnight Rodeo 2 — Brown / Gold", bg: "#2a1c0c", accent: "#d4a838", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4329/43179/B-removebg-preview__69128__74515.1771384301.png?c=2", imageDetail: "" },
-          { name: "Not My First Rodeo — Cream / Burgundy", bg: "#3a1418", accent: "#f0e2c4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3382/32019/CBB6SAFR3-1A-removebg-preview__00217.1743089849.PNG?c=2", imageDetail: "" },
-          { name: "Country Club Aces — Dark Green / White", bg: "#0e2e1f", accent: "#e8f0e0", release: "Standard", imageHero: "https://smashitsports.com/cdn/shop/files/2025-combat-mfg-country-club-spec-a1-bbcor-or-members-only-aces-3-bbcor-baseball-bat-cbb6saclg3-smash-it-sports-69999.png?v=1752496544&width=1000", imageDetail: "" }
+          { name: "Racer — Sky Blue / Orange", bg: "#0d3a5c", accent: "#ff8a2a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4569/45681/CBB6GLFB3-1A-removebg-preview__83226.1779278966.png?c=2" },
+          { name: "Stang — Red / Black", bg: "#3d0c0c", accent: "#e63946", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3867/37753/CBB6STNG3-1A-removebg-preview__49478.1760549394.png?c=2" },
+          { name: "Baja — Orange / Teal", bg: "#4a1a08", accent: "#2ecadb", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3866/37735/CBB6BAJA3-1A-removebg-preview__86724.1760548617.png?c=2" },
+          { name: "Cookies & Cream — White / Chocolate Speckle", bg: "#2d1d12", accent: "#f0e4d4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/products/2452/images/7066/2026-Combat-Spec-A1-Cookies-N-Cream-3-BBCOR-LAST-ONE_7025__39496.1775427394.415.315.png?c=2" },
+          { name: "Mint Chip — Mint Blue / Chocolate Speckle", bg: "#0A5C57", accent: "#2d1d12", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2451/7067/2026-Combat-Spec-A1-Mint-Chip-3-BBCOR_7022__41546.1775427397.png?c=2" },
+          { name: "Cookie Jar — Monster Blue / Chocolate", bg: "#041B57", accent: "#2d1d12", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2398/7118/2026-Combat-Spec-A1-Cookie-Monster-3-BBCOR_7019__62107.1775427515.png?c=2" },
+          { name: "Shooters Shoot — Camo ", bg: "#0F4518", accent: "#BFB578", release: "Standard", imageHero: "https://images.betterbaseball.com/media/catalog/product/cache/74c1057f7991b4edb2bc7bdaa94de933/c/b/cbb6shot3.jpg" },
+          { name: "Sandstorm — Desert Tan / Khaki", bg: "#3d2f18", accent: "#d4b27a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/1280x1280/products/4338/43277/Untitled_design29__08397.1771558318.png?c=2" },
+          { name: "Midnight Rodeo Arena — Onyx Black / Gold", bg: "#0e0c0a", accent: "#c8a23a", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3755/36566/ARENA-removebg-preview__74208.1759260732.png?c=2" },
+          { name: "Midnight Rodeo 2 — Brown / Gold", bg: "#2a1c0c", accent: "#d4a838", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/4329/43179/B-removebg-preview__69128__74515.1771384301.png?c=2" },
+          { name: "Not My First Rodeo — Cream / Burgundy", bg: "#3a1418", accent: "#f0e2c4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3382/32019/CBB6SAFR3-1A-removebg-preview__00217.1743089849.PNG?c=2" },
+          { name: "Country Club Aces — Dark Green / White", bg: "#0e2e1f", accent: "#e8f0e0", release: "Standard", imageHero: "https://smashitsports.com/cdn/shop/files/2025-combat-mfg-country-club-spec-a1-bbcor-or-members-only-aces-3-bbcor-baseball-bat-cbb6saclg3-smash-it-sports-69999.png?v=1752496544&width=1000" }
         ]
       },
       {
@@ -534,11 +537,10 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Bone White / Black", bg: "#1C1F1C", accent: "#C7BEA7", release: "2025 Standard", imageHero: "", imageDetail: "" },
-          { name: "The Chosen One — Pearl White / Gold", bg: "#403315", accent: "#f5ede0", release: "2026 Limited Edition", imageHero: "https://baseballexpress.com/cdn/shop/files/RBB6IONE3-40_91ffc129-ef17-41b4-986f-b1794b9efb86.png?v=1755867766&width=2500", imageDetail: "https://s.turbifycdn.com/aah/nutosportsinc/rawlings-icon-the-chosen-one-2-5-8-bbcor-bat-rbb6ione3-3oz-2026-22.jpg" },
-          { name: "Electric Unicorn — Lavender / Pink / Cyan", bg: "#3a1f5c", accent: "#e2a3ff", release: "2025 Limited Edition", imageHero: "", imageDetail: "" },
-          { name: "Bright Teal", bg: "#3E6F70", accent: "#000000", release: "2026 Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2284/6468/2026-Rawlings-Icon-BBCOR-3_6167__28256.1773587036.png?c=2", imageDetail: "" },
-
+          { name: "Bone White / Black", bg: "#1C1F1C", accent: "#C7BEA7", release: "2025 Standard", imageHero: "https://smashitsports.com/cdn/shop/files/2025-rawlings-icon-3-bbcor-baseball-bat-rbb5i3-smash-it-sports-44027_grande.png?v=1752496970" },
+          { name: "The Chosen One — Pearl White / Gold", bg: "#403315", accent: "#f5ede0", release: "2026 Limited Edition", imageHero: "https://baseballexpress.com/cdn/shop/files/RBB6IONE3-40_91ffc129-ef17-41b4-986f-b1794b9efb86.png?v=1755867766&width=2500" },
+          { name: "Electric Unicorn — Lavender / Pink / Cyan", bg: "#3a1f5c", accent: "#e2a3ff", release: "2025 Limited Edition", imageHero: "https://academy.scene7.com/is/image/academy//baseball-bats/rawlings-2025-icon-electric-unicorn-bbcor-bat--3-r00711169/90cb3614-9182-4117-a472-de31c9e66d4e?$pdp-mobile-gallery-ng$" },
+          { name: "Bright Teal", bg: "#3E6F70", accent: "#000000", release: "2026 Standard", imageHero: "https://cdn11.bigcommerce.com/s-zukvdqcl/images/stencil/500x659/products/2284/6468/2026-Rawlings-Icon-BBCOR-3_6167__28256.1773587036.png?c=2" }
         ]
       },
       {
@@ -548,9 +550,9 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Matte Charcoal / Anodized Silver", bg: "#1e2024", accent: "#a8acb4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/1400/12557/WBD2463010__88448.1692130259.png?c=2", imageDetail: "" },
-          { name: "Teal / Blood Red / Black", bg: "#471C1C", accent: "#65A187", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3274/30622/WBD2588010__cbc999cba91ec76900c21f8caff36c8bA-removebg-preview__80206.1738607628.png?c=2", imageDetail: "" },
-          { name: "Aqua / Bright Yellow", bg: "#A8A647", accent: "#26C988", release: "2025 Limited Edition", imageHero: "", imageDetail: "" }
+          { name: "Matte Charcoal / Anodized Silver", bg: "#1e2024", accent: "#a8acb4", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/1400/12557/WBD2463010__88448.1692130259.png?c=2" },
+          { name: "Teal / Blood Red / Black", bg: "#471C1C", accent: "#65A187", release: "Standard", imageHero: "https://cdn11.bigcommerce.com/s-mvitciln6p/images/stencil/320w/products/3274/30622/WBD2588010__cbc999cba91ec76900c21f8caff36c8bA-removebg-preview__80206.1738607628.png?c=2" },
+          { name: "Aqua / Bright Yellow", bg: "#A8A647", accent: "#26C988", release: "2025 Limited Edition", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2564010_/WBD2564010__4153d39e2ec3e3659d590ad327227f5a.png" }
         ]
       },
       {
@@ -560,10 +562,10 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Electric Blue / Tech Orange / Platinum", bg: "#0a2d5c", accent: "#ff7a2a", release: "Standard", imageHero: "", imageDetail: "" },
-          { name: "Light Blue / Red", bg: "#3D4F63", accent: "#991A23", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4116010_/WBL4116010__1aad7e3b08f851a538bb062d4cb04ebd.png", imageDetail: "" },
-          { name: "Wildstyle — Vice Teal / Hot Pink", bg: "#6B2263", accent: "#FCDD0F", release: "2026 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4209010_/WBL4209010__6c19c24ebdee762ad195fe02df88082b.png", imageDetail: "" },
-          { name: "Patriot — Blue / Red / Silver", bg: "#06125E", accent: "#BF0606", release: "2025 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4093010_/WBL4093010__0bffcaa08ad62f58d46ca058994ccb8e.png", imageDetail: "" },
+          { name: "Electric Blue / Tech Orange / Platinum", bg: "#0a2d5c", accent: "#ff7a2a", release: "Standard", imageHero: "https://m.media-amazon.com/images/I/71PZjctUmSL.jpg" },
+          { name: "Light Blue / Red", bg: "#3D4F63", accent: "#991A23", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4116010_/WBL4116010__1aad7e3b08f851a538bb062d4cb04ebd.png" },
+          { name: "Wildstyle — Vice Teal / Hot Pink", bg: "#6B2263", accent: "#FCDD0F", release: "2026 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4209010_/WBL4209010__6c19c24ebdee762ad195fe02df88082b.png" },
+          { name: "Patriot — Blue / Red / Silver", bg: "#06125E", accent: "#BF0606", release: "2025 Limited Edition", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4093010_/WBL4093010__0bffcaa08ad62f58d46ca058994ccb8e.png" }
         ]
       },
       {
@@ -573,10 +575,9 @@ const LEAGUES = {
         sizes: "30\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Deep Crimson Burgundy / Dark Burgundy", bg: "#3a0c14", accent: "#000000", release: "Standard", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2527010_/WBD2527010__f5cdedf0d56b4fe78d98f159376e1eee.png", imageDetail: "" },
-          { name: "Vivid Blue - Bright Blue", bg: "#09243B", accent: "#1A5C99", release: "2025 Limited Edition", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2562010_/WBD2562010__fff835cfd011db4bac82b321135761f9.png", imageDetail: "" },
-          { name: "Purple / Gold / Blue", bg: "#150630", accent: "#4F3E08", release: " Standard", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2587010_/WBD2587010__296282027e1ff016bd394a16b96f8fba.png", imageDetail: "" },
-
+          { name: "Deep Crimson Burgundy / Dark Burgundy", bg: "#3a0c14", accent: "#000000", release: "Standard", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2527010_/WBD2527010__f5cdedf0d56b4fe78d98f159376e1eee.png" },
+          { name: "Vivid Blue - Bright Blue", bg: "#09243B", accent: "#1A5C99", release: "2025 Limited Edition", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2562010_/WBD2562010__fff835cfd011db4bac82b321135761f9.png" },
+          { name: "Purple / Gold / Blue", bg: "#150630", accent: "#4F3E08", release: " Standard", imageHero: "https://www.demarini.com/en-us/media/catalog/product/article_images/WBD2587010_/WBD2587010__296282027e1ff016bd394a16b96f8fba.png" }
         ]
       }
     ]
@@ -599,7 +600,7 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Gloss Black Barrel / Natural Timber Handle", bg: "#1a1612", accent: "#b8966a", release: "Standard", imageHero: "", imageDetail: "" }
+          { name: "Gloss Black Handle / Natural Timber Barrel", bg: "#1a1612", accent: "#b8966a", release: "Standard", imageHero: "https://www.slugger.com/en-us/media/catalog/product/article_images/WBL4286010_/WBL4286010__2aec68ded92e94129992b553fa6bcf3a.png" }
         ]
       },
       {
@@ -609,7 +610,7 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Piano Black Gloss / Gold Leaf Branding", bg: "#0e0c0a", accent: "#d4a838", release: "Standard", imageHero: "", imageDetail: "" }
+          { name: "Piano Black Gloss / Gold Leaf Branding", bg: "#0e0c0a", accent: "#d4a838", release: "Standard", imageHero: "https://www.chandlerbats.com/cdn/shop/files/CB271AFull.png?v=1726001221" }
         ]
       },
       {
@@ -619,8 +620,7 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Flame-Charred Raw Maple / Clear Coat", bg: "#2a1810", accent: "#c08a4a", release: "Standard", imageHero: "", imageDetail: "" },
-          { name: "Midnight Stain — Deep Indigo / Silver Stitching", bg: "#0e1430", accent: "#c8ccd4", release: "2025 Limited Edition", imageHero: "", imageDetail: "" }
+          { name: "Flame-Charred Raw Maple / Clear Coat", bg: "#2a1810", accent: "#c08a4a", release: "Standard", imageHero: "https://dac8r2vkxfv8c.cloudfront.net/images/products/5d26-03-24-american-batsmith-ts28-professional-birch-wood-baseball-bat--ts28-37596-1_m.jpg" }
         ]
       },
       {
@@ -630,8 +630,8 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Matte Cherry Stain / Charcoal Barrel", bg: "#2e1418", accent: "#a04848", release: "Standard", imageHero: "", imageDetail: "" },
-          { name: "Pennant Chaser — Pinstripe White / Natural Ash", bg: "#1a1f2e", accent: "#e8e4d8", release: "2026 Limited Edition", imageHero: "", imageDetail: "" }
+          { name: "Matte Cherry Stain / Charcoal Barrel", bg: "#2e1418", accent: "#a04848", release: "Standard", imageHero: "https://images.dickssportinggoods.com/is/image/dkscdn/21AQ9AJC24PRMDLTRWBT_is" },
+          { name: "Pencil — Yellow", bg: "#CFB82B", accent: "#000000", release: "2026 Limited Edition", imageHero: "https://cdn11.bigcommerce.com/s-3qkcoi/images/stencil/original/products/1195/2981/VCSMJC24LS-N2_A__67579.1673477127.png" }
         ]
       },
       {
@@ -641,7 +641,7 @@ const LEAGUES = {
         sizes: "31\" – 34\"",
         drops: "-3",
         colorways: [
-          { name: "Deep Walnut Stain / Natural Ash / Chrome Gold Logo", bg: "#26160e", accent: "#c89858", release: "Standard", imageHero: "", imageDetail: "" }
+          { name: "Deep Walnut Stain / Natural Ash / Chrome Gold Logo", bg: "#26160e", accent: "#c89858", release: "Standard", imageHero: "https://images.squarespace-cdn.com/content/v1/5bec7db51aef1d5729201b50/f8305bff-3370-4f64-b0d0-426d11f2c64c/MYVE4AP5-N-BK_A__86708.png?format=1000w" }
         ]
       }
     ]
@@ -665,28 +665,25 @@ function enterVault() {
 document.getElementById('enterButtonText').textContent = ENTER_BUTTON_TEXT;
 document.body.style.overflow = 'hidden';
 
-/* Lighten/utility */
-function lightenHex(hex, amount = 0.25) {
+/* Compose a soft, near-white tinted gradient for each section.
+   Keeps the white "studio" feel so product images blend, while still
+   carrying a hint of the colorway. */
+function composeSectionGradient(bgHex) {
+  return `linear-gradient(180deg,
+    #ffffff 0%,
+    #ffffff 10%,
+    ${hexToRgba(bgHex, 0.06)} 35%,
+    ${hexToRgba(bgHex, 0.09)} 65%,
+    #ffffff 92%,
+    #ffffff 100%)`;
+}
+
+function hexToRgba(hex, alpha) {
   const c = hex.replace('#','');
   const r = parseInt(c.substring(0,2),16);
   const g = parseInt(c.substring(2,4),16);
   const b = parseInt(c.substring(4,6),16);
-  const nr = Math.min(255, Math.round(r + (255-r)*amount));
-  const ng = Math.min(255, Math.round(g + (255-g)*amount));
-  const nb = Math.min(255, Math.round(b + (255-b)*amount));
-  return `rgb(${nr},${ng},${nb})`;
-}
-
-/* Compose a rich vertical gradient for a section bg — bleeds to neutral on top/bottom */
-function composeSectionGradient(bgHex) {
-  // Mix top/bottom into the deep neutral to ensure no harsh borders
-  return `linear-gradient(180deg,
-    rgba(10,10,12,1) 0%,
-    rgba(10,10,12,0.55) 8%,
-    ${bgHex} 30%,
-    ${bgHex} 70%,
-    rgba(10,10,12,0.55) 92%,
-    rgba(10,10,12,1) 100%)`;
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 /* Render league switching */
@@ -720,14 +717,14 @@ function renderLeague() {
     <a class="top5-link" onclick="scrollToBat('${bat.id}')">
       <span class="top5-rank">0${i+1}</span>${bat.name}
     </a>
-  `).join('<span style="color: rgba(255,255,255,0.15); font-size: 10px;">/</span>');
+  `).join('<span style="color: rgba(10,10,12,0.18); font-size: 10px;">/</span>');
+
+  // Init active colorway BEFORE rendering sections so the initial image is in place
+  league.bats.forEach(bat => { activeColorwayMap[bat.id] = 0; });
 
   // Bat sections
   const sections = document.getElementById('batSections');
   sections.innerHTML = league.bats.map((bat, i) => renderBatSection(bat, i)).join('');
-
-  // Init active colorway for each
-  league.bats.forEach(bat => { activeColorwayMap[bat.id] = 0; });
 
   // Wire up observers for bg morph and fade-in
   setupObservers();
@@ -735,20 +732,19 @@ function renderLeague() {
 
 function renderBatSection(bat, idx) {
   const initialCw = bat.colorways[0];
+  const heroImg = initialCw.imageHero
+    ? `<img src="${initialCw.imageHero}" alt="${initialCw.name}" />`
+    : `<div class="image-placeholder"><span>Hero Image<br/>Slot</span></div>`;
+
   return `
     <section class="bat-section" id="${bat.id}" data-bat-id="${bat.id}" style="background: ${composeSectionGradient(initialCw.bg)};">
       <div class="max-w-[1480px] mx-auto px-6 md:px-12 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
 
-          <!-- IMAGES (left, 7 cols) -->
+          <!-- HERO IMAGE (left, 7 cols) - large, single, visible by default -->
           <div class="lg:col-span-7 fade-in">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-4">
-              <div class="bat-image-wrap" id="${bat.id}-hero-wrap">
-                <div class="image-placeholder"><span>Hero Image<br/>Slot</span></div>
-              </div>
-              <div class="bat-image-wrap" id="${bat.id}-detail-wrap" style="margin-top: 0;">
-                <div class="image-placeholder" style="aspect-ratio: 3/4;"><span>Detail View<br/>Slot</span></div>
-              </div>
+            <div class="bat-image-wrap" id="${bat.id}-hero-wrap">
+              ${heroImg}
             </div>
           </div>
 
@@ -760,8 +756,8 @@ function renderBatSection(bat, idx) {
             </h3>
             <div class="flex items-baseline gap-5 mb-10 mt-6">
               <div class="font-display" style="font-size: 22px; font-weight: 600;">${bat.price}</div>
-              <div style="width: 1px; height: 22px; background: rgba(255,255,255,0.25);"></div>
-              <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.65); font-weight: 500;">RANK · 0${idx+1}</div>
+              <div style="width: 1px; height: 22px; background: rgba(10,10,12,0.25);"></div>
+              <div style="font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(10,10,12,0.65); font-weight: 500;">RANK · 0${idx+1}</div>
             </div>
 
             <div class="grid grid-cols-2 gap-6 mb-10">
@@ -779,7 +775,7 @@ function renderBatSection(bat, idx) {
             <div>
               <div class="flex items-center justify-between mb-4">
                 <div class="spec-label" style="margin-bottom: 0;">Colorway</div>
-                <div id="${bat.id}-cwname" class="text-xs font-medium" style="color: rgba(255,255,255,0.85); letter-spacing: 0.04em; text-align: right; max-width: 60%; line-height: 1.4;">
+                <div id="${bat.id}-cwname" class="text-xs font-medium" style="color: rgba(10,10,12,0.85); letter-spacing: 0.04em; text-align: right; max-width: 60%; line-height: 1.4;">
                   ${initialCw.name}
                 </div>
               </div>
@@ -847,19 +843,17 @@ function selectColorway(batId, idx) {
   document.getElementById(`${batId}-cwname`).textContent = cw.name;
   document.getElementById(`${batId}-release`).textContent = cw.release.toUpperCase();
 
-  // Update images
-  updateBatImage(batId, 'hero', cw.imageHero, cw.name);
-  updateBatImage(batId, 'detail', cw.imageDetail, cw.name);
+  // Update hero image
+  updateBatImage(batId, cw.imageHero, cw.name);
 }
 
-function updateBatImage(batId, type, url, cwName) {
-  const wrap = document.getElementById(`${batId}-${type}-wrap`);
+function updateBatImage(batId, url, cwName) {
+  const wrap = document.getElementById(`${batId}-hero-wrap`);
   if (!wrap) return;
   if (url) {
-    wrap.innerHTML = `<img src="${url}" alt="${cwName}" style="width: 100%; height: auto; display: block; background: transparent;" />`;
+    wrap.innerHTML = `<img src="${url}" alt="${cwName}" />`;
   } else {
-    const isHero = type === 'hero';
-    wrap.innerHTML = `<div class="image-placeholder" style="aspect-ratio: ${isHero ? '4/5' : '3/4'};"><span>${isHero ? 'Hero Image' : 'Detail View'}<br/>Slot</span></div>`;
+    wrap.innerHTML = `<div class="image-placeholder"><span>Hero Image<br/>Slot</span></div>`;
   }
 }
 
@@ -879,14 +873,13 @@ function setupObservers() {
   }, { threshold: 0.15 });
   document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
 
-  // Bg-morph observer: when a section is most prominently in view, update fixed bg layer
+  // Bg-morph observer
   const sections = Array.from(document.querySelectorAll('.bat-section'));
   if (!sections.length) return;
 
   activeObserver = new IntersectionObserver((entries) => {
     entries.forEach(e => { e.target.classList.toggle('in-view', e.isIntersecting && e.intersectionRatio > 0.4); });
 
-    // Pick the most-visible section
     let best = null, bestRatio = 0;
     sections.forEach(s => {
       const rect = s.getBoundingClientRect();
@@ -902,7 +895,7 @@ function setupObservers() {
       const cw = bat.colorways[cwIdx];
       document.getElementById('bgLayer').style.background = composeSectionGradient(cw.bg);
     } else {
-      document.getElementById('bgLayer').style.background = 'var(--vault-bg)';
+      document.getElementById('bgLayer').style.background = '#ffffff';
     }
   }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
 
